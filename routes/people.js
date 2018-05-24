@@ -66,6 +66,20 @@ router.get('/new/', (req, res) => {
 //   2. Redirecionar para a rota de listagem de pessoas
 //      - Em caso de sucesso do INSERT, colocar uma mensagem feliz
 //      - Em caso de erro do INSERT, colocar mensagem vermelhinha
+router.post('/', function(req, res){
+  let sql = 'INSERT INTO person (name, alive, eatenBy)' +
+           'VALUES (' + req.body.name + ',1, NULL);';
+  console.log(sql);
+  db.query(sql,
+    (err, result) => {
+      if (err) {
+        req.flash('error', 'Erro desconhecido. Descrição: ' + err);
+      } else {
+        req.flash('success', 'A pessoa foi adicionado com sucesso.');
+      }
+      res.redirect('/people');
+  });
+});
 
 
 /* DELETE uma pessoa */
