@@ -68,7 +68,7 @@ router.get('/new/', (req, res) => {
 //      - Em caso de erro do INSERT, colocar mensagem vermelhinha
 router.post('/', function(req, res){
   let sql = 'INSERT INTO person (name, alive, eatenBy)' +
-           'VALUES (' + req.body.name + ',1, NULL);';
+           'VALUES (' + db.escape(req.body.name) + ',1, NULL);';
   console.log(sql);
   db.query(sql,
     (err, result) => {
@@ -89,7 +89,18 @@ router.post('/', function(req, res){
 //   2. Redirecionar para a rota de listagem de pessoas
 //      - Em caso de sucesso do INSERT, colocar uma mensagem feliz
 //      - Em caso de erro do INSERT, colocar mensagem vermelhinha
+router.delete('/:id', function(req, res) {
+  var query = 'DELETE FROM person WHERE id = ' + req.params.id;
+  db.query(query, function(err, result) {
+    if (err) {
+      req.flash('error', 'Ocorreu um erro ao remover pessoa: ' + err);
+    } else {
+      req.flash('success', 'A pessoa foi removida');
+    }
+    res.redirect('/people');
+  });
 
+});
 
 
 module.exports = router;
